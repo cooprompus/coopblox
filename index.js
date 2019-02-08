@@ -1,6 +1,10 @@
 const fs = require('fs');
 const rbx = require("noblox.js")
 
+let friends 
+let permanentFriends
+let vips
+
 async function startApp () {
 	await rbx.cookieLogin("_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|")
 }
@@ -21,28 +25,32 @@ function loadPermanentFriends(){
 	console.log(permanentFriends)
 }
 
-let friends 
-let permanentFriends
+function loadVips(){
+	vips = fs.readFileSync("./vip.txt", "utf8").split(",")
+	console.log("vip:")
+	console.log(vips)
+}
 
+loadPermanentFriends()
+loadVips()
 startApp()
 	.then(() => {
 		return rbx.getFriends(454258140, 'AllFriends')
 	})
 	.then((result) => {
 		console.log("got friends!")
-		//console.log(friends)
-		console.log(result.friends.map(friend => friend.user.id))
 		friends = result.friends.map(friend => friend.user.id)
 		return friends
 	})
 	.then(writeFriends)
 	.then((friends) => {
 		friends.forEach((friend) => {
-			console.log(`removing friend: ${friend}`)
-			rbx.removeFriend(friend)
+			if(!vips.includes(friend)){
+				console.log(`removing friend: ${friend}`)
+				rbx.removeFriend(friend)
+			}
 		})
 	})
-	.then(loadPermanentFriends)
 	.then(() => {
 		const onfr = rbx.onFriendRequest();
 		onfr.on('data', (friendrequest) => {
