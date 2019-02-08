@@ -1,0 +1,14 @@
+{
+  "name": "coopblox",
+  "version": "1.0.0",
+  "description": "unfriends all friends and automatically accepts friend requests from previous list and a static list",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "cooprompus",
+  "license": "ISC",
+  "dependencies": {
+    "noblox.js": "^4.2.3"
+  }
+}
