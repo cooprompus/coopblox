@@ -20,13 +20,13 @@ function writeFriends(friends){
 }
 
 function loadPermanentFriends(){
-	permanentFriends = fs.readFileSync("./perm.txt", "utf8").split(",")
+	permanentFriends = fs.readFileSync("./perm.txt", "utf8").split(",").map((item) => parseInt(item.trim()));
 	console.log("perm:")
 	console.log(permanentFriends)
 }
 
 function loadVips(){
-	vips = fs.readFileSync("./vip.txt", "utf8").split(",")
+	vips = fs.readFileSync("./vip.txt", "utf8").split(",").map((item) => parseInt(item.trim()));
 	console.log("vip:")
 	console.log(vips)
 }
@@ -45,7 +45,9 @@ startApp()
 	.then(writeFriends)
 	.then((friends) => {
 		friends.forEach((friend) => {
-			if(!vips.includes(friend)){
+			if(vips.includes(friend)){
+				console.log(`not removing vip friend: ${friend}`)
+			}else{
 				console.log(`removing friend: ${friend}`)
 				rbx.removeFriend(friend)
 			}
