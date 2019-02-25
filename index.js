@@ -1,8 +1,12 @@
+require('dotenv').config()
 const fs = require('fs');
 const rbx = require("noblox.js")
+const axios = require("axios")
 
-const robloxId = 0
-const cookie = "_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_"
+const robloxId = process.env.roblixId
+const cookie = process.env.cookie
+const coopreg = process.env.coopreg || "localhost:8734/user/roblox/"
+const useCoopReg = process.env.usecoopreg || true
 
 const vipFile = "vip.txt"
 const friendFile = "friends.txt"
@@ -11,8 +15,10 @@ const banFile = "ban.txt"
 
 if(process.argv[2] === "unfriend"){
 	startApp().then(() => removeFriends()).then(() => process.exit(0)).catch(console.error)
+}else if(process.argv[2] === "acceptall"){
+	startApp().then(() => acceptFriends(true)).catch(console.error)
 }else{
-	startApp().then(() => acceptFriends()).catch(console.error)
+	startApp().then(() => acceptFriends(false)).catch(console.error)
 }
 
 async function startApp () {
@@ -52,20 +58,44 @@ function loadVips(){
 	})
 }
 
-function acceptFriends(){
+function acceptFriends(allFriends){
 	const onfr = rbx.onFriendRequest();
 	onfr.on('data', (friendrequest) => {
 		console.log(friendrequest);
-		if(getPermanentFriendsList().includes(friendrequest) || getFriendsList().includes(friendrequest)){
+		if(allFriends){
 			console.log(`accepting friend request: ${friendrequest}`)
 			rbx.acceptFriendRequest(friendrequest)
-		}else{
-			console.log(`not accepting friend request: ${friendrequest}`)
+		}else {
+			checkRegistered(friendreq).then( isRegistered => {
+				if(isRegistered || getPermanentFriendsList().includes(friendrequest) || getFriendsList().includes(friendrequest)){
+					console.log(`accepting friend request: ${friendrequest}`)
+					rbx.acceptFriendRequest(friendrequest)
+				}else{
+					console.log(`not accepting friend request: ${friendrequest}`)
+				}
+			}
 		}
 	});
 	onfr.on('error', (err) =>  {
 		console.error(err.stack);
 	});
+}
+
+function checkRegistered(friendreq){
+	return new Promise((resolve, reject) => {
+		if(usecoopreg !== true){
+			return resolve(false)
+		}
+		axios.get(coopreg + friendreq)
+			.then(response => {
+				console.log(response.data);
+				resolve(response.body.ban)
+			})
+			.catch(error => {
+				console.log(error);
+				return resolve(false)
+			});
+	})
 }
 
 async function getFriends(){

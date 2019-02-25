@@ -9,6 +9,8 @@
   "author": "cooprompus",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.18.0",
+    "dotenv": "^6.2.0",
     "noblox.js": "^4.2.3"
   }
 }
