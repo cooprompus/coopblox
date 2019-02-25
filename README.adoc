@@ -1,0 +1,86 @@
+= coopblox
+
+This app helps streamers manage their roblox friends list by maintaining a "virtual" friends list and auto accepting friend requests from those roblox users. 
+
+== Features
+
+Allows unfriending all users, except those on a vip list, and then keeps the unfriended users in a list so that any friend request can be automatically accepted.
+
+
+Allows auto-accepting all friend requests.
+
+Auto-accepts friend requests from those that have registered (and are not currently banned) with coopregister
+
+Rejects friend requests from users in an optional ban list.
+
+== Running 
+
+You are first required to create a ```.env``` file that contains required variables to be set:
+
+..env
+----
+roblixId= # <1>
+cookie= # <2>
+usecoopreg=true|false # <3>
+coopreg= # <4>
+----
+<1> Your roblox ID (should be a number)
+<2> Your roblox login cookie which can be copied by following https://github.com/suufi/noblox.js#getting-your-cookie-chrome[these instructions]
+<3> (optional) whether to use coopregister integration
+<4> (optional) the url to call if using coopregister intergration
+
+after creating the ```.env``` file, install the app:
+
+.first run
+```
+npm install
+```
+
+Then the app can be ran in different modes:
+
+=== Modes
+
+==== unfriend
+unfriends all users not in the vip.txt list and stores them in friends.txt
+
+```
+nodejs index.js unfriend
+```
+
+==== acceptall
+accepts all incoming friend requests
+
+```
+nodejs index.js acceptall
+```
+
+
+==== noarg
+accepts friends that are in friends.txt, perm.txt but not those in ban.txt
+
+.running the app
+```
+nodejs index.js
+```
+
+
+
+=== User list files
+These are all comma-delimited files that contain ONLY roblox user IDs
+
+==== friends.txt
+list of roblox user ids of users that have been unfriended. Any users on this list will always have their friend requests accepted. 
+
+==== vip.txt
+list of roblox user ids of users that should never be unfriended
+
+==== perm.txt
+list of roblox user ids of users that should always have their friend requests accepted
+
+==== ban.txt
+list of roblox user ids of users that should never have their friend requests accepted
+
+
+
+
+
